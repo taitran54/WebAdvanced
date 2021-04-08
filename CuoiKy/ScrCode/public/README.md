@@ -1,0 +1,1 @@
+This folder for public file, inclucde scripts, css and more
