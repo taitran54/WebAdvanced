@@ -7,6 +7,7 @@ const uuid = require('uuid')
 const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt')
 const GoogleStrategy = require('passport-google-oauth20').Strategy
+const LocalStrategy = require('passport-local').Strategy
 // const { CLIENT_SECRET, CLIENT_ID } = process.env
 
 const User = require('../models/user')
@@ -16,30 +17,52 @@ const User = require('../models/user')
 login.use(bodyParser.urlencoded({extended: false}))
 
 login.get('/', function (req, res) {
-    return res.render('login'); // load the login page
+    console.log(req.session)
+    return res.render('login', { login_errors: req.session.messages || [] }); // load the login page
 });
 
-login.post('/', (req, res) => {
-    let { username, password } = req.body
-    console.log(password, ': ',username)
-    let hashed = bcrypt.hashSync(password, 10)
-    User.findOne({ 'username' : username, 'password': hashed})
-        .then(user => {
-            if (user)
-                return done(null, user)
-            return done(user, null)})
-        .catch(err => done(err, null))
-})
+login.post('/', 
+  passport.authenticate('local', { failureRedirect: '/login' , failureMessage: "Invalid username or password"}),
+  function(req, res) {
+    res.redirect('/test');
+});
+
+passport.use(new LocalStrategy(
+    (username, password, done) => {
+        console.log('Account: ', username, password)
+        //match user
+        User.findOne({name : username})
+        .then((user)=>{
+            if(!user) {
+                return done(null,false,{message : 'that email is not registered'});
+            }
+            console.log(user.password)
+            //match pass
+            bcrypt.compare(password,user.password,(err,isMatch)=>{
+                if(err) throw err;
+
+                if(isMatch) {
+                    // req.flash('success_msg','You have now registered!')
+                    return done(null,user);
+                } else {
+                    // req.flash('success_msg','You have now registered!')
+                    return done(null,false,{message : 'pass incorrect'});
+                }
+            })
+        })
+        .catch((err)=> {console.log(err)})
+    })
+)
 
 passport.serializeUser(function(user, done) {
-    console.log("Serialize: ",user)
+    // console.log("Serialize: ",user)
     done(null, user._id);
 });
 
 passport.deserializeUser((id, done) => {
     User.findById(id)
         .then(user => {
-            console.log("Serialize: ",user)
+            // console.log("Serialize: ",user)
             done(null, user)
         })
         .catch(err => done(err, null));
@@ -53,16 +76,23 @@ passport.use(new GoogleStrategy({
     },
     function(accessToken, refreshToken, profile, done) {
         const authId = 'google:' + profile.id;
+        // console.log(profile._json.email)
+        const email = profile._json.email
+        // const email = '518H0560@student.tdtu.edu.vn'
+        const pattern =  /(.*@student\.tdtu\.edu\.vn|.*@tdtu\.edu\.vn)$/i
+        if (!email.match(pattern)){
+            return done(null , null)
+        }
         User.findOne({ 'authId': authId })
         .then(user => {
             if(user) return done(null, user);
-            console.log(profile)
+            // console.log(profile)
             new User({
-            authId: authId,
-            name: profile.displayName,
-            email: profile._json.email,
-            created: new Date(),
-            role: 'student',
+                authId: authId,
+                name: profile.displayName,
+                email: profile._json.email,
+                created: new Date(),
+                role: 'student',
             }).save()
             .then(user => done(null, user))
             .catch(err => done(err, null));
@@ -85,7 +115,8 @@ login.get('/auth/google',
 //   which, in this example, will redirect the user to the home page.
 login.get('/auth/google/callback', 
     passport.authenticate('google', { successRedirect:'/test',
-                                      failureRedirect: '/login' }),
+                                      failureRedirect: '/login',
+                                      failureMessage: "Invalid google account" }),
     // function(req, res) {
     //     res.redirect('/test');
     // }

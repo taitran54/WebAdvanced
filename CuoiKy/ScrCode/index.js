@@ -5,14 +5,17 @@ const bodyParser = require('body-parser')
 const path = require('path')
 const app = express()
 const passport = require('passport')
+const flash = require('connect-flash')
 
 //Set middleware
 const auth = require('./middlewares/auth')
+const requesAdmin = require('./middlewares/admin')
 
 //Set Router
 const loginRouter = require('./controller/login')
 const mainRouter = require('./controller/main')
 const logoutRouter = require('./controller/logout')
+const registerRouter = require('./controller/register')
 
 const PORT = process.env.PORT || 8080
 
@@ -38,6 +41,7 @@ app.use('/public', express.static(path.join(__dirname, 'public')))
 //set path for Router
 app.use('/login',passport.initialize(), loginRouter)
 app.use('/logout', auth, logoutRouter)
+app.use('/register',requesAdmin, registerRouter)
 app.use('/test', auth, mainRouter) //test middleware use for a Router
 
 app.get('/', (req, res) => {

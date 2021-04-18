@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{{title}}</title>
+    <title>Login page</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -19,7 +19,9 @@
 		</style>
   </head>
   <body>
-
+    <% if (login_errors) { %>
+      <h2><%= login_errors %></h2>
+    <% } %>
 <nav class="light-blue lighten-1" role="navigation">
     <div class="nav-wrapper container">
       <a id="logo-container" href="#" class="brand-logo">Authentication</a>
