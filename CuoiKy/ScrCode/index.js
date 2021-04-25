@@ -10,6 +10,7 @@ const flash = require('connect-flash')
 //Set middleware
 const auth = require('./middlewares/auth')
 const requesAdmin = require('./middlewares/admin')
+const clearSession = require('./middlewares/clearsession')
 
 //Set Router
 const loginRouter = require('./controller/login')
@@ -33,6 +34,7 @@ app.use(require('express-session')({
 
 app.use(passport.initialize()) //Using to repare for passport
 app.use(passport.session());
+app.use(clearSession)
 
 //Set static file ex: css, js for client request
 app.use('/public', express.static(path.join(__dirname, 'public')))
@@ -41,7 +43,7 @@ app.use('/public', express.static(path.join(__dirname, 'public')))
 //set path for Router
 app.use('/login',passport.initialize(), loginRouter)
 app.use('/logout', auth, logoutRouter)
-app.use('/register',requesAdmin, registerRouter)
+app.use('/register', registerRouter)
 app.use('/test', auth, mainRouter) //test middleware use for a Router
 
 app.get('/', (req, res) => {

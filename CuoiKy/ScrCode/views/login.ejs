@@ -20,7 +20,7 @@
   </head>
   <body>
     <% if (login_errors) { %>
-      <h2><%= login_errors %></h2>
+      <h2><%= login_errors[login_errors.length - 1] %></h2>
     <% } %>
 <nav class="light-blue lighten-1" role="navigation">
     <div class="nav-wrapper container">
