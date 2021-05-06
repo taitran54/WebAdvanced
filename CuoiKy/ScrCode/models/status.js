@@ -7,7 +7,9 @@ const referrenceValidator = require('mongoose-referrence-validator');
 const StatusSchema = Schema({
     _id: { type: String, default: uuid.v4 },
     content: { type: String },
-    user_post: { type: String, ref: User.collection.collectionName }
+    time: { type: Date },
+    user_post: { type: String, ref: User.collection.collectionName },
+    image: { type : [ String ] }
     
 })
 

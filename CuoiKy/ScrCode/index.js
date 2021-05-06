@@ -17,6 +17,8 @@ const loginRouter = require('./controller/login')
 const mainRouter = require('./controller/main')
 const logoutRouter = require('./controller/logout')
 const registerRouter = require('./controller/register')
+const homePage = require('./controller/home')
+const statusRoute = require('./controller/status')
 
 const PORT = process.env.PORT || 8080
 
@@ -43,7 +45,9 @@ app.use('/public', express.static(path.join(__dirname, 'public')))
 //set path for Router
 app.use('/login',passport.initialize(), loginRouter)
 app.use('/logout', auth, logoutRouter)
-app.use('/register', registerRouter)
+app.use('/home', auth, homePage)
+app.use('/status', auth, statusRoute)
+app.use('/register', requesAdmin ,registerRouter)
 app.use('/test', auth, mainRouter) //test middleware use for a Router
 
 app.get('/', (req, res) => {

@@ -17,19 +17,21 @@ const User = require('../models/user')
 login.use(bodyParser.urlencoded({extended: false}))
 
 login.get('/', function (req, res) {
-    console.log(req.session)
+    // console.log(req.session)
     return res.render('login', { login_errors: req.session.messages || [] }); // load the login page
 });
 
 login.post('/', 
-  passport.authenticate('local', { failureRedirect: '/login' , failureMessage: "Invalid username or password"}),
+  passport.authenticate('local', { successRedirect:'/home',
+                                   failureRedirect: '/login' , 
+                                   failureMessage: "Invalid username or password"}),
   function(req, res) {
     res.redirect('/test');
 });
 
 passport.use(new LocalStrategy(
     (username, password, done) => {
-        console.log('Account: ', username, password)
+        // console.log('Account: ', username, password)
         //match user
         User.findOne({name : username})
         .then((user)=>{
@@ -93,6 +95,7 @@ passport.use(new GoogleStrategy({
                 email: profile._json.email,
                 created: new Date(),
                 role: 'student',
+                avatar: './public/uploads/avatar/default.png'
             }).save()
             .then(user => done(null, user))
             .catch(err => done(err, null));
@@ -114,7 +117,7 @@ login.get('/auth/google',
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
 login.get('/auth/google/callback', 
-    passport.authenticate('google', { successRedirect:'/test',
+    passport.authenticate('google', { successRedirect:'/home',
                                       failureRedirect: '/login',
                                       failureMessage: "Invalid google account" }),
     // function(req, res) {

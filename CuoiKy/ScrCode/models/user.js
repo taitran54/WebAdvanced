@@ -9,6 +9,7 @@ const userSchema = Schema({
   password: { type: String },
   role: { type: String },
   created: { type: Date },
+  avatar: { type: String },
 })
 
 module.exports = model('users', userSchema)
