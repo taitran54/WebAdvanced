@@ -9,14 +9,31 @@
 // };
 
 $(document).ready(function() {
-    $("#btn-post").click(function(){
+    $("#btn-post-status").click(function(){
         // alert("button");
         var content = $( "#status_content" ).val()
-        var request = $.ajax({
+        $.ajax({
             url: "../status",
             type: "POST",
             data: { content : content },
-            dataType: "html"
+            dataType: "html",
+            success: (data) => {
+                let obj = JSON.parse(data)
+                // console.log(obj)
+                var avatar_div = document.createElement("div")
+                avatar_div.className = "fb-user-thumb"
+                avatar_div.innerHTML = '<img src="'+ obj.user_image +'"/>'
+
+                // console.log(avatar_div)
+                var body = document.getElementById("panel-status")
+                console.log(body)
+                body.prepend(avatar_div)
+                
+            },
+            error: (xhr, ajaxOptions, thrownError) => {
+                console.log(xhr)
+            }
         })
+    
     }); 
 });

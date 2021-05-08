@@ -35,6 +35,7 @@ register.post('/', (req, res) => {
         password: hashed,
         role: role,
         created: new Date(), 
+        avatar: './public/uploads/avatar/default.png'
     }).save()
 
     .then((value) => {
