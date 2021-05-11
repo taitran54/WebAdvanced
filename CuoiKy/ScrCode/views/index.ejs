@@ -245,7 +245,7 @@ max-height:280px;
 <body>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 <div class="container bootstrap snippets bootdey">
-    <div class="row">
+    <div class="row" id = "page-content">
         <div class="panel">
             <div class="cover-photo">
               <div class="fb-timeline-img">
@@ -268,7 +268,7 @@ max-height:280px;
             </div>
         </div>
         
-        <div class="panel profile-info">
+        <div class="panel profile-info" id="post-status">
           <form>
               <textarea class="form-control input-lg p-text-area" id='status_content'rows="2" placeholder="Whats in your mind today?"></textarea>
   
@@ -284,8 +284,11 @@ max-height:280px;
         </form >
         </div>
         
-        <div class="panel" id="panel-status">
-          <div class="panel-body">
+        <div class="panel">
+          <div class="panel-body" >
+            <button class="btn btn-danger fa fa-eraser pull-right" aria-hidden="true"></button>
+              <button class="btn btn-info fa fa-pencil pull-right" aria-hidden="true"></button>
+              
               <div class="fb-user-thumb">
                   <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="">
               </div>
@@ -293,6 +296,7 @@ max-height:280px;
                   <h3><a href="#" class="#">Margarita Elina</a></h3>
                   <p>7 minutes ago near Alaska, USA</p>
               </div>
+              
               <div class="clearfix"></div>
               <p class="fb-user-status">John is world famous professional photographer.  with forward thinking clients to create beautiful, honest and amazing things that bring positive results. John is world famous professional photographer.  with forward thinking clients to create beautiful, honest and amazing things that bring positive results.
               </p>
