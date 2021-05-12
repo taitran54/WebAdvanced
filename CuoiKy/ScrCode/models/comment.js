@@ -10,7 +10,8 @@ const CommentSchema = Schema ({
     content: { type: String },
     time: { type: Date },
     user_comment: { type: String, ref: User.collection.collectionName },
-    status_parent: { type: String, ref: Status.collection.collectionName }
+    status_parent: { type: String, ref: Status.collection.collectionName },
+    like: [{ type: String, ref: User.collection.collectionName }]
 })
 
 CommentSchema.plugin(referrenceValidator)

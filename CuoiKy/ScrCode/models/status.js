@@ -9,7 +9,8 @@ const StatusSchema = Schema({
     content: { type: String },
     time: { type: Date },
     user_post: { type: String, ref: User.collection.collectionName },
-    image: { type : [ String ] }
+    image: { type : [ String ] },
+    like: [{ type: String, ref: User.collection.collectionName }]
     
 })
 
