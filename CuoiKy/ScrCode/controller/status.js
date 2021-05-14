@@ -3,9 +3,10 @@ require('dotenv').config()
 const express = require('express');
 const status = express.Router()
 
-const Status = require('../models/status');
-const user = require('../models/user');
+const Status = require('../models/status')
 const User = require ('../models/user')
+const Comment = require('../models/comment');
+const comment = require('../models/comment');
 
 status.post('/', (req, res) => {
     let { content } = req.body
@@ -36,15 +37,17 @@ status.post('/', (req, res) => {
             date: status.time,
             user_name: user.name,
             user_image: user.avatar,
-            isEdite: true,
+            number_like: status.like.length,
+            user_id: user._id,
+            isEdit: true,
             isDelete: true
         }))
     })
-    // .catch(err => {
-    //     return res.end(JSON.stringify({
-    //         success : false
-    //     }))
-    // })
+    .catch(err => {
+        return res.end(JSON.stringify({
+            success : false
+        }))
+    })
 })
 
 status.post('/like/:status_id', (req, res) =>{
@@ -84,5 +87,48 @@ status.post('/like/:status_id', (req, res) =>{
         return res.end(JSON.stringify( { err_code : 100 } ))
     })
 })
+
+status.post('/comment/:status_id', (req, res) => {
+    let { status_id } = req.params
+    let { cmt_content } = req.body 
+    user_id = req.session.passport.user
+
+    new Comment ({
+        content: cmt_content,
+        time: new Date(),
+        user_comment: user_id,
+        status_parent: status_id
+    }).save()
+    .then(async (comment) => {
+
+        let user = await User.findOne({ '_id' : user_id })
+        .then(user => {
+            return user
+        })
+        .catch(err => {
+            return err
+        })
+
+        return res.end(JSON.stringify({
+            success: true,
+            comment_user_name: user.name,
+            comment_content: comment.content,
+            comment_id: comment._id,
+            isDelete: true,
+            commet_user_image: user.avatar,
+            date_comment: comment.time
+        }))
+    })
+    .catch(err => {
+        console.log("ERROR in status Router:",err)
+        return res.end(JSON.stringify({
+            success : false
+        }))
+    })
+})
+
+function get_comment_array(status_id){
+
+}
 
 module.exports = status
