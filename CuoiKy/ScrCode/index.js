@@ -19,6 +19,7 @@ const logoutRouter = require('./controller/logout')
 const registerRouter = require('./controller/register')
 const homePage = require('./controller/home')
 const statusRoute = require('./controller/status')
+const loadStatus = require('./controller/load_status')
 
 const PORT = process.env.PORT || 8080
 
@@ -48,6 +49,7 @@ app.use('/logout', auth, logoutRouter)
 app.use('/home', auth, homePage)
 app.use('/status', auth, statusRoute)
 app.use('/register', requesAdmin ,registerRouter)
+app.use('/load_status', auth, loadStatus)
 app.use('/test', auth, mainRouter) //test middleware use for a Router
 
 app.get('/', (req, res) => {

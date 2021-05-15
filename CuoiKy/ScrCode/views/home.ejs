@@ -247,44 +247,6 @@ max-height:280px;
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 <div class="container bootstrap snippets bootdey">
     <div class="row" id = "page-content">
-        <div class="panel">
-            <div class="cover-photo">
-              <div class="fb-timeline-img">
-                  <img src="https://bootdey.com/img/Content/bg1.jpg" alt="">
-              </div>
-              <div class="fb-name">
-                  <h2><a href="#"><%= user_name %> </a></h2>
-              </div>
-            </div>
-            <div class="panel-body">
-              <div class="profile-thumb">
-                  <img src="<% if (avatar_image != undefined) { %>
-                        <%= avatar_image %>
-                        <% } else { %>
-                            https://bootdey.com/img/Content/avatar/avatar1.png
-                        <% } %>"
-                    alt="">
-              </div>
-            </div>
-        </div>
-        
-        <div class="panel profile-info" id="post-status">
-          <form>
-              <textarea class="form-control input-lg p-text-area" id='status_content'rows="2" placeholder="Whats in your mind today?"></textarea>
-  
-          <footer class="panel-footer">
-              <button id="btn-post-status" type="button" class="btn btn-info pull-right">Post</button>
-              <ul class="nav nav-pills">
-                  <li><a href="#"><i class="fa fa-map-marker"></i></a></li>
-                  <li><a href="#"><i class="fa fa-camera"></i></a></li>
-                  <li><a href="#"><i class=" fa fa-film"></i></a></li>
-                  <li><a href="#"><i class="fa fa-microphone"></i></a></li>
-              </ul>
-          </footer>
-        </form >
-        </div>
-        
-
         <% status.forEach(function(s) { %>
         <div class="panel">
         
@@ -303,7 +265,7 @@ max-height:280px;
               </div>
               
               <div class="clearfix"></div>
-              <p class="fb-user-status"> <%= s.content %>
+              <p class="fb-user-status">John is world famous professional photographer.  with forward thinking clients to create beautiful, honest and amazing things that bring positive results. John is world famous professional photographer.  with forward thinking clients to create beautiful, honest and amazing things that bring positive results.
               </p>
               <div class="fb-status-container fb-border">
                   <div class="fb-time-action">
@@ -345,7 +307,7 @@ max-height:280px;
                           </a>
                           <div class="cmt-form">
                               <textarea type="text" class="form-control" placeholder="Write a comment..." onkeypress="commentStatus(event, '<%= s._id %>', '<%= user_id %>')" name=""></textarea>
-                        </div>
+                            </div>
                       </li>
                   </ul>
                   <div class="clearfix"></div>
