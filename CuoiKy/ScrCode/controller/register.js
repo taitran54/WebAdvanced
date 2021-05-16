@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt')
 const passport = require('passport')
 const User = require('../models/user')
+const { STATIC_URL } = process.env
 
 register.use(bodyParser.urlencoded({extended: false}))
 
@@ -35,7 +36,7 @@ register.post('/', (req, res) => {
         password: hashed,
         role: role,
         created: new Date(), 
-        avatar: './public/uploads/avatar/default.png'
+        avatar: STATIC_URL +  '/public/uploads/avatar/default.png'
     }).save()
 
     .then((value) => {

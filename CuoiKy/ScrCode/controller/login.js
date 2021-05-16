@@ -8,7 +8,7 @@ const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt')
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 const LocalStrategy = require('passport-local').Strategy
-// const { CLIENT_SECRET, CLIENT_ID } = process.env
+const { CLIENT_SECRET, CLIENT_ID , CALLBACK_URL , STATIC_URL } = process.env
 
 const User = require('../models/user')
 
@@ -72,9 +72,9 @@ passport.deserializeUser((id, done) => {
 
 
 passport.use(new GoogleStrategy({
-    clientID: '914718534273-867f2hk89t9lo8ejtknedrg543ajoobk.apps.googleusercontent.com',
-    clientSecret: 'ybUObMp-TnYRNSx_SV30i0id',
-    callbackURL: "http://localhost:8080/login/auth/google/callback"
+    clientID: CLIENT_ID,
+    clientSecret: CLIENT_SECRET,
+    callbackURL: CALLBACK_URL
     },
     function(accessToken, refreshToken, profile, done) {
         const authId = 'google:' + profile.id;
@@ -88,14 +88,14 @@ passport.use(new GoogleStrategy({
         User.findOne({ 'authId': authId })
         .then(user => {
             if(user) return done(null, user);
-            // console.log(profile)
+            console.log(profile)
             new User({
                 authId: authId,
                 name: profile.displayName,
                 email: profile._json.email,
                 created: new Date(),
                 role: 'student',
-                avatar: './public/uploads/avatar/default.png'
+                avatar:  STATIC_URL + '/public/uploads/avatar/default.png'
             }).save()
             .then(user => done(null, user))
             .catch(err => done(err, null));

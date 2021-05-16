@@ -9,6 +9,7 @@ const userSchema = Schema({
   password: { type: String },
   role: { type: String },
   created: { type: Date },
+  falcuty: { type: String },
   avatar: { type: String },
 })
 

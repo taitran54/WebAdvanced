@@ -121,7 +121,7 @@ async function get_comment_array(status_id, user_id){
 function isAdmin (user_id) {
     User.findOne({'_id' : user_id})
     .then(user => {
-        if (user.role == 'Admin') {
+        if (user.role == 'admin') {
             return true
         }
         return false

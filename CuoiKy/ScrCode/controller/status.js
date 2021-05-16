@@ -23,6 +23,9 @@ status.get('/',(req, res) => {
             var result = new Object()
             result.status = []
 
+            var isAd = await isAdmin(user_id)
+            var isFa = await isFaculty(user_id)
+
             while ((count < status.length) && (count < 10)) {
                 
                 // console.log(status[count]._id)
@@ -58,6 +61,78 @@ status.get('/',(req, res) => {
             result.user_name = user.name
             result.user_id = user._id
             result.avatar_image = user.avatar
+            result.isAd = isAd
+            result.isFa = isFa
+            // console.log(result)
+            return res.render('index', result)
+        })
+})
+
+status.get('/:page_user_id', async (req, res) => {
+    user_id = req.session.passport.user
+    let { page_user_id } = req.params
+    req.session.status_filter = new Object()
+    req.session.status_filter = { user_post: page_user_id }
+    let user_own = await User.findOne ({ _id: page_user_id })
+    .then(user => {
+        return user
+    }).catch(err => {
+        return err
+    })
+    console.log("In get status:id_user:", user_own)
+    User.findOne( { _id : user_id } )
+        .then (async user => {
+            let status = await Status.find( { user_post: page_user_id } ).sort({ time: -1 })
+            // console.log(status)
+            var count = 0
+            req.session.render_status_id = []
+            console.log(status.length)
+            var isAd = await isAdmin(user_id)
+            var result = new Object()
+            result.status = []
+
+            while ((count < status.length) && (count < 10)) {
+                
+                // console.log(status[count]._id)
+                req.session.render_status_id.push(status[count]._id)
+
+                var status_obj = new Object()
+                if ( status[count].like !== 'undefined'){
+                    var boo = status[count].like.includes(user_id)
+                }
+                else {
+                    var boo = false
+                }
+
+                isDelete = false
+                isEdit = false
+                if (isAd || user_own._id == user_id){
+                    isDelete = true
+                    isEdit = true
+                }
+
+                status_obj._id = status[count]._id
+                status_obj.isEdit = isEdit
+                status_obj.isDelete = isDelete
+                status_obj.content = status[count].content
+                status_obj.time = get_text_from_date(status[count].time)
+                status_obj.user_post = status[count].user_post
+                status_obj.like = status[count].like.length
+                status_obj.isLike = boo
+                status_obj.comments = await get_comment_array(status[count]._id, user_own._id)
+                status_obj.user_name = user_own.name
+                status_obj.user_id = user_own._id
+                status_obj.avatar_image =user_own.avatar
+
+                result.status.push(status_obj)
+                count += 1
+            }
+            // console.log(req.session.render_status_id)
+            // console.log (user)
+            
+            result.user_name = user_own.name
+            result.user_id = user_own._id
+            result.avatar_image = user_own.avatar
             // console.log(result)
             return res.render('index', result)
         })
@@ -74,6 +149,7 @@ status.post('/', (req, res) => {
         user_post: user_id
     }).save()
     .then(async (status) => {
+        req.session.render_status_id.push(status._id)
         let user_id = status.user_post
         // console.log(res.end())
         const user = await User.findOne({ _id : user_id })
@@ -183,12 +259,26 @@ status.post('/comment/:status_id', (req, res) => {
     })
 })
 
+status.delete('/comment/:comment_id', (req, res) => {
+    
+    let { comment_id } = req.params
+    // console.log(comment_id)
+    Comment.deleteOne( { _id: comment_id} )
+    .then (cmt => {
+        // console.log(cmt)
+        return res.end(JSON.stringify({ success: true }))
+    }).catch(err => {
+        // console.log(err)
+        return res.end(JSON.stringify({ success: false }))
+    })
+})
+
 async function get_comment_array(status_id, user_id){
     var result = []
     // user_id = req.session.passport.user
 
     let comment = await Comment.find({ status_parent : status_id }).sort({ time: 1 })
-
+    var isAd = await isAdmin(user_id)
     var i
     for (i = 0; i < comment.length; ++i ) {
         var comment_obj = new Object()
@@ -198,7 +288,7 @@ async function get_comment_array(status_id, user_id){
             return err
         })
         var boo = false
-        if (user_id == user_cmt._id){
+        if (user_id == user_cmt._id || isAd){
             var boo = true
         }
         comment_obj._id = comment[i]._id
@@ -234,5 +324,30 @@ function msToTime(ms) {
     else return days + " days"
 }
 
+async function isAdmin (user_id) {
+    var x = await User.findOne({'_id' : user_id})
+    .then(user => {
+        if (user.role == 'admin') {
+            return true
+        }
+        return false
+    }).catch(err => {
+        return false
+    })
+    return x
+}
+
+async function isFaculty (user_id) {
+    var x = await User.findOne({'_id' : user_id})
+    .then(user => {
+        if (user.role == 'admin' || user.role == 'faculty') {
+            return true
+        }
+        return false
+    }).catch(err => {
+        return false
+    })
+    return x
+}
 
 module.exports = status

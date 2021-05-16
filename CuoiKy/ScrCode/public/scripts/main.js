@@ -233,6 +233,9 @@ function render_cmt (obj){
     cmt_div.innerHTML += '<a href="#">' + obj.comment_user_name + '</a>'
 
     cmt_div.innerHTML += '<span> ' + obj.comment_content + '</span>'
+    if (obj.isDelete) {
+        cmt_div.innerHTML += '<button type="button" style="border: azure;" class ="fas fa-minus-circle" onclick = "deleteComment(\'' + obj.comment_id + '\')""><i class="fas fa-minus-circle" style="font-size:24px"></i></button>'
+    }
     cmt_div.innerHTML += '<p>' + get_text_from_date(obj.date_comment) + '</p>'
 
 
@@ -242,6 +245,7 @@ function render_cmt (obj){
     cmt_avatar.innerHTML = '<img src="' + obj.commet_user_image +'" alt="">'
 
     var li_cmt = document.createElement("li")
+    li_cmt.id = 'comment_' + obj.comment_id
     li_cmt.appendChild(cmt_avatar)
     li_cmt.appendChild(cmt_div)
 
@@ -483,6 +487,27 @@ function render_post_load_more(obj, user_id, user_avatar) {
     // console.log(body)
 
     return body
+}
+
+function deleteComment(comment_id) {
+    var cmt_id = 'comment_' + comment_id
+    var li_cmt = document.getElementById(cmt_id)
+    $.ajax({
+        url: './comment/' + comment_id,
+        type: 'DELETE',
+        success: function(data){
+            // console.log('In deleteComment: ',data)
+            let obj = JSON.parse(data)
+            if (obj.success){
+                li_cmt.remove()
+            } else {
+                alert("Fail")
+            }
+        },
+        error: (xhr, ajaxOptions, thrownError) => {
+            console.log(xhr)
+        }
+    })
 }
 // var cmt = JSON.parse('{ "comment_user_name" : "Tai", "comment_content": "Toi la Tai", "date_comment": "2021-05-12T07:00:40.253Z" , "comment_user_id" : "123", "isLike": true }')
 // console.log("TEST COMMENT: ",render_cmt(cmt) )

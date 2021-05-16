@@ -20,6 +20,9 @@ const registerRouter = require('./controller/register')
 const homePage = require('./controller/home')
 const statusRoute = require('./controller/status')
 const loadStatus = require('./controller/load_status')
+const comment = require('./controller/comment')
+const notifications = require('./controller/notification')
+const resetpassword = require('./controller/resetpassword')
 
 const PORT = process.env.PORT || 8080
 
@@ -48,12 +51,21 @@ app.use('/login',passport.initialize(), loginRouter)
 app.use('/logout', auth, logoutRouter)
 app.use('/home', auth, homePage)
 app.use('/status', auth, statusRoute)
-app.use('/register', requesAdmin ,registerRouter)
+app.use('/register'
+// , requesAdmin 
+    ,registerRouter)
 app.use('/load_status', auth, loadStatus)
+app.use('/comment',auth, comment)
+app.use('/notification', auth, notifications)
+app.use('/resetpassword', auth, resetpassword)
 app.use('/test', auth, mainRouter) //test middleware use for a Router
 
 app.get('/', (req, res) => {
-    return res.json({'code': 404, 'msg': 'Router not found'})
+    return res.redirect('./login')
+})
+
+app.get('[\d\w\/]', (req, res) => {
+    return res.end(JSON.stringify({code: 404, message: "Not found"}))
 })
 
 app.listen(PORT, () => {

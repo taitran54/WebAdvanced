@@ -13,6 +13,25 @@
 </head>
 <body>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="./status"><%= user_name %></a>
+    </div>
+    <ul class="nav navbar-nav">
+        <li class="active"><a href="../home"><i class='fa fa-home' style='font-size:24px'></i></a></li>
+        
+        <li><a href="#"><i class='fa fa-bell' style='font-size:24px'></i></a></li>
+        <% if (isAd) { %>
+        <li><a href="../register"><i class='fa fa-user-plus' style='font-size:24px'> </i></a></li>
+        <% } %>
+        <% if (isFa) { %>
+        <li><a href="../resetpassword"><i class='fa fa-lock' style='font-size:24px'> </i></a></li>
+        <% } %>
+        <li><a href="../logout"><i class='fa fa-sign-out' style='font-size:24px'></i></a></li>
+    </ul>
+    </div>
+</nav>
 <div class="container bootstrap snippets bootdey">
     <div class="row" id = "page-content">
 
@@ -29,7 +48,7 @@
                   <img src="<%=s.avatar_image %>" alt="">
               </div>
               <div class="fb-user-details">
-                  <h3><a href="../status/<=% s.user_id %>" class="#"><%= s.user_name %></a></h3>
+                  <h3><a href="../status/<%= s.user_id %>" class="#"><%= s.user_name %></a></h3>
                   <p><%= s.time %></p>
               </div>
               
@@ -58,13 +77,14 @@
         
                   <ul class="fb-comments">
                     <% s.comments.forEach(function(comment) { %>
-                      <li>
+                      <li id="comment_<%= comment._id %>">
                           <a href="../status/<%= comment.comment_user_id %>" class="cmt-thumb">
                               <img src="<%= comment.comment_user_avatar %>" alt="">
                           </a>
                           <div class="cmt-details">
                               <a href="../status/<%= comment.comment_user_id %>"><%= comment.comment_user_name %></a>
                               <span> <%= comment.content %> </span>
+                              <% if (comment.isDelete){ %> <button type="button" style="border: azure;" class ='fas fa-minus-circle' onclick = "deleteComment('<%= comment._id %>')""><i class='fas fa-minus-circle' style='font-size:24px'></i></button> <% } %> 
                               <p><%= comment.time %> </p>
                           </div>
                       </li>
