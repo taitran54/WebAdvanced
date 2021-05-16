@@ -10,11 +10,11 @@ $(document).ready(function() {
             dataType: "html",
             success: (data) => {
                 document.getElementById("status_content").value = ''
-
+                console.log(data)
                 let obj = JSON.parse(data)
                 if (obj.success){
                     let body = render_post(obj)
-                    // console.log(data)
+                    
 
                     var content = document.getElementById("page-content")
                     // console.log (content)
@@ -119,8 +119,8 @@ function render_post(obj) {
     var status_container = document.createElement("div")
     status_container.className = 'fb-status-container fb-border fb-gray-bg'
     status_container.appendChild(like_div)
-
-    var nodeChild = create_ul_cmt(status.comments, obj.status_id, obj.user_id, obj.user_image)
+    console.log("In render_post", obj.comments)
+    var nodeChild = create_ul_cmt(obj.comments, obj.status_id, obj.user_id, obj.user_image)
     status_container.appendChild(nodeChild)
 
     panel_div.appendChild(status_container)

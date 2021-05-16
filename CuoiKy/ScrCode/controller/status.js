@@ -6,7 +6,7 @@ const status = express.Router()
 const Status = require('../models/status')
 const User = require ('../models/user')
 const Comment = require('../models/comment');
-const { compare } = require('bcrypt');
+// const { compare } = require('bcrypt');
 
 status.get('/',(req, res) => {
     user_id = req.session.passport.user
@@ -88,6 +88,7 @@ status.post('/', (req, res) => {
             success: true,
             status_id: status._id,
             content: status.content,
+            comments: [],
             isLike: false,
             date: status.time,
             user_name: user.name,
